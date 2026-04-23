@@ -76,12 +76,353 @@
         // Lưu ý: Đảm bảo có chính xác 60 items trong mảng này!
         // =======================================================
         const questions = [
-            // COPY 60 CÂU TỪ TIN NHẮN TRƯỚC DÁN VÀO ĐÂY
-            // ...
-            { type: "trac-nghiem", question: "Câu 1: Số đối của phân số 3/25 là:", options: ["25/3", "-25/3", "-3/25", "1/25"], correct: "-3/25" },
-            { type: "tra-loi-ngan", question: "Câu 2: Bạn Nam đi siêu thị mua món đồ giá 145 600 đồng. Làm tròn đến hàng nghìn Nam phải trả bao nhiêu? (Chỉ ghi số)", correct: "146000" },
-            { type: "dung-sai", question: "Câu 3: Hình chữ nhật có 4 trục đối xứng.", correct: "Sai" }
-            // Vui lòng dán đủ 60 câu để logic chạy đúng!
+            // ==========================================
+            // BỘ 1: KHỞI ĐỘNG (Phần 1 - Gốc)
+            // ==========================================
+            {
+                type: "trac-nghiem",
+                question: "Câu 1: Số đối của phân số -7/15 là:",
+                options: ["15/7", "-15/7", "7/15", "-7/-15"],
+                correct: "7/15"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 2: Lớp có 40 học sinh, trong đó số học sinh nữ chiếm 40%. Hỏi lớp có bao nhiêu học sinh nam?",
+                options: ["16", "24", "20", "10"],
+                correct: "24"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 3: Bạn Nam đi siêu thị mua một món đồ giá 145 600 đồng. Nếu làm tròn số tiền đến hàng nghìn, Nam phải trả bao nhiêu?",
+                options: ["145 000", "146 000", "145 500", "150 000"],
+                correct: "146 000"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 4: Trong các góc sau đây, góc nào lớn hơn góc vuông nhưng nhỏ hơn góc bẹt?",
+                options: ["Góc nhọn", "Góc vuông", "Góc bẹt", "Góc tù"],
+                correct: "Góc tù"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 5: Tính nhanh giá trị biểu thức sau: (5/11 * 4/9) + (5/11 * 5/9) (Chỉ ghi phân số dạng a/b)",
+                correct: "5/11"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 6: Đoạn thẳng AB dài 12 cm. Gọi M là trung điểm của AB, N là trung điểm của AM. Hỏi đoạn thẳng AN dài bao nhiêu cm? (Chỉ ghi số)",
+                correct: "3"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 7: Một cửa hàng giảm giá 20% cho tất cả sách. Một cuốn có giá niêm yết 150 000 đồng. Sau khi giảm giá, sách có giá bao nhiêu tiền? (Chỉ ghi số)",
+                correct: "120000"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 8: Hình chữ nhật có 4 trục đối xứng.",
+                correct: "Sai"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 9: Phép tính (-3,5) - (1,5 + 2,5) có kết quả bằng -7,5.",
+                correct: "Đúng"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 10: Hiện tượng nguyệt thực xảy ra khi Mặt trăng nằm giữa Mặt trời và Trái đất.",
+                correct: "Sai"
+            },
+        
+            // ==========================================
+            // BỘ 2: TRẠM VƯỢT CHƯỚNG NGẠI VẬT (Phần 2 - Gốc)
+            // ==========================================
+            {
+                type: "trac-nghiem",
+                question: "Câu 11: Thầy dùng 18g bột cà phê chiết xuất ra 36g dung dịch cà phê lỏng. Tỉ số phần trăm của lượng bột so với dung dịch lỏng là:",
+                options: ["20%", "50%", "200%", "18%"],
+                correct: "50%"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 12: Shin dùng 1/6 cây bút chì vẽ anh hùng, và 1/3 cây bút để vẽ Nanako. Tổng số phần bút chì Shin đã dùng là:",
+                options: ["1/2", "2/9", "1/9", "2/3"],
+                correct: "1/2"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 13: Giá phòng ngày thường là 1.200.000 đồng/đêm. Do lễ, khách sạn tăng giá 25%. Số tiền gia đình phải trả thêm cho 1 đêm là:",
+                options: ["250.000", "1.500.000", "300.000", "200.000"],
+                correct: "300.000"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 14: Flycam có 100% pin. Chuyến đầu giảm 35,5%, chuyến sau tốn thêm 15,2%. Lượng pin còn lại là:",
+                options: ["50,7%", "49,3%", "48,3%", "51,7%"],
+                correct: "49,3%"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 15: Đầu bếp dùng 1/5 bao bột làm bánh ngọt, tiếp 1/4 bao làm bánh mì. Bao bột mì còn lại bao nhiêu phần? (Ghi phân số a/b)",
+                correct: "11/20"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 16: Sách giá 150.000đ giảm 30%. Nam có 110.000đ. Mua xong Nam còn thừa bao nhiêu tiền? (Chỉ ghi số)",
+                correct: "5000"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 17: Bình có 5,0 lít nước. Uống hết 1,2 lít, chia đều phần còn lại vào 2 chai nhỏ. Mỗi chai chứa bao nhiêu lít? (Chỉ ghi số)",
+                correct: "1.9"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 18: Thư mục ảnh chiếm 2/5 bộ nhớ, thư mục video chiếm 3/8 bộ nhớ. Khẳng định: 'Thư mục video chiếm nhiều dung lượng hơn ảnh'.",
+                correct: "Sai"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 19: Trong 500g nước Biển Chết có 175g muối. Khẳng định: 'Tỉ số phần trăm của muối trong nước là 35%'.",
+                correct: "Đúng"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 20: Trong gạo có 1,3% khối lượng chất béo. Khối lượng chất béo trong 15kg gạo là 0,195kg.",
+                correct: "Đúng"
+            },
+        
+            // ==========================================
+            // BỘ 3: TRẠM GIẢI MÃ (Phần 3 - Gốc)
+            // ==========================================
+            {
+                type: "trac-nghiem",
+                question: "Câu 21: Hai thanh ray của đường tàu hỏa cho ta hình ảnh của loại đường thẳng nào?",
+                options: ["Cắt nhau", "Dích dắc", "Song song", "Gấp khúc"],
+                correct: "Song song"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 22: Có bao nhiêu đường thẳng đi qua cả hai điểm phân biệt A và B?",
+                options: ["1", "2", "3", "Vô số"],
+                correct: "1"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 23: Hiện tượng nhật thực xảy ra khi:",
+                options: ["MT và MTrăng khác phía TĐ", "MT và TĐ khác phía MTrăng", "MT và TĐ cùng phía MTrăng", "MTrăng và TĐ khác phía MT"],
+                correct: "MT và TĐ khác phía MTrăng"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 24: Cho một góc có số đo là 125 độ. Góc đó là góc gì?",
+                options: ["Góc vuông", "Góc tù", "Góc bẹt", "Góc nhọn"],
+                correct: "Góc tù"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 25: A, M, N thẳng hàng. AM = 5m, AN = 10m. Khoảng cách MN bằng bao nhiêu? (Chỉ ghi số)",
+                correct: "5"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 26: Đoạn AD = 6 cm. I thuộc tia AD sao cho D là trung điểm của AI. Độ dài AI bằng bao nhiêu cm? (Chỉ ghi số)",
+                correct: "12"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 27: Nhà cách trường 3000m. Siêu thị là trung điểm quãng đường đó. Từ nhà đến siêu thị là bao nhiêu mét? (Chỉ ghi số)",
+                correct: "1500"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 28: Chữ AMBULANCE dán ngược đầu xe là ứng dụng tính chất đối xứng trục để nhìn qua gương thấy xuôi.",
+                correct: "Đúng"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 29: Ký hiệu Chữ thập đỏ (chữ thập y tế) chỉ có đúng 2 trục đối xứng.",
+                correct: "Sai"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 30: Trên đoạn thẳng SU, lều cách đều S và U thì lều chính là trung điểm của SU.",
+                correct: "Đúng"
+            },
+        
+            // ==========================================
+            // BỘ 4: KHỞI ĐỘNG (Phần 1 - Bổ sung)
+            // ==========================================
+            {
+                type: "trac-nghiem",
+                question: "Câu 31: Số đối của phân số 3/25 là:",
+                options: ["25/3", "-25/3", "-3/25", "1/25"],
+                correct: "-3/25"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 32: Kết quả của phép cộng 3/4 + (-2/5) là:",
+                options: ["7/20", "1/20", "-7/20", "-1/4"],
+                correct: "7/20"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 33: Biểu thức (-3,12) - (1,5 + 2,8) tương đương với:",
+                options: ["-3,12 - 1,5 + 2,8", "-3,12 - 1,5 - 2,8", "3,12 - 1,5 + 2,8", "-3,12 + 1,5 - 2,8"],
+                correct: "-3,12 - 1,5 - 2,8"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 34: Có bao nhiêu số thập phân x (có 1 chữ số sau dấu phẩy) thỏa mãn 3,26 < x < 3,81?",
+                options: ["4", "5", "6", "7"],
+                correct: "6"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 35: Tính nhanh B = (4/9 * 2/7) + (4/9 * 5/7). (Ghi phân số a/b)",
+                correct: "4/9"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 36: Kết quả của phép tính 30,4 - (10,3 + 1,5) là bao nhiêu? (Chỉ ghi số)",
+                correct: "18.6"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 37: Làm tròn số -1260,23 đến hàng trăm. (Chỉ ghi số)",
+                correct: "-1300"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 38: Phân số 6/24 có giá trị bằng phân số 1/4.",
+                correct: "Đúng"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 39: Ly 100ml có 20ml nước cam. Khẳng định: 'Tỉ số phần trăm của cam so với tổng là 25%'.",
+                correct: "Sai"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 40: Số đối của 1/20 là 20/1.",
+                correct: "Sai"
+            },
+        
+            // ==========================================
+            // BỘ 5: TRẠM VƯỢT CHƯỚNG NGẠI VẬT (Phần 2 - Bổ sung)
+            // ==========================================
+            {
+                type: "trac-nghiem",
+                question: "Câu 41: Ứng dụng học tập chiếm 5/11 bộ nhớ, giải trí chiếm 4/9. Thư mục nào chiếm nhiều hơn?",
+                options: ["Học tập", "Giải trí", "Bằng nhau", "Không thể so sánh"],
+                correct: "Học tập"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 42: Lớp có 45 học sinh, 20 giỏi. Số học sinh giỏi chiếm bao nhiêu phần của lớp?",
+                options: ["1/9", "1/3", "4/9", "3/5"],
+                correct: "4/9"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 43: Bill siêu thị 69 850đ. Làm tròn đến hàng nghìn để trả tiền mặt thì trả bao nhiêu?",
+                options: ["69 000", "69 900", "70 000", "71 000"],
+                correct: "70 000"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 44: Gạo chứa 1,3% chất béo. Lượng chất béo trong 15kg gạo là:",
+                options: ["19,5kg", "1,95kg", "19,5g", "0,195kg"],
+                correct: "0,195kg"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 45: Đầu bếp còn dư 11/20 bao bột. Mỗi khay bánh quy cần 1/20 bao. Làm được mấy khay? (Chỉ ghi số)",
+                correct: "11"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 46: Phòng 1.500.000đ được giảm 10%. Số tiền phòng phải trả là bao nhiêu? (Chỉ ghi số)",
+                correct: "1350000"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 47: Shin dư 1/2 cây bút. Vẽ mỗi siêu nhân tốn 1/10 cây. Vẽ được bao nhiêu siêu nhân? (Chỉ ghi số)",
+                correct: "5"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 48: Bình 5,0 lít uống hết 1,2 lít thì còn lại đúng 4,8 lít.",
+                correct: "Sai"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 49: Kết quả của phép trừ 2/3 - 1/4 bằng với phép cộng 2/3 + (-1/4).",
+                correct: "Đúng"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 50: Ảnh chiếm 3/8, video chiếm 2/5. Khẳng định: 'Ảnh chiếm nhiều dung lượng hơn'.",
+                correct: "Sai"
+            },
+        
+            // ==========================================
+            // BỘ 6: TRẠM GIẢI MÃ (Phần 3 - Bổ sung)
+            // ==========================================
+            {
+                type: "trac-nghiem",
+                question: "Câu 51: Một góc có số đo 125 độ được phân loại là góc:",
+                options: ["Vuông", "Nhọn", "Bẹt", "Tù"],
+                correct: "Tù"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 52: Ba điểm thẳng hàng A, M, N. AM=5, AN=10. Khẳng định đúng là:",
+                options: ["A nằm giữa", "M nằm giữa A và N", "N nằm giữa A và M", "Không có điểm giữa"],
+                correct: "M nằm giữa A và N"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 53: Từ nhà đến trường 3000m. Tiệm cafe trên đường đó, cách trường 600m. Khoảng cách nhà đến cafe là:",
+                options: ["1500m", "2400m", "600m", "3600m"],
+                correct: "2400m"
+            },
+            {
+                type: "trac-nghiem",
+                question: "Câu 54: Có tất cả bao nhiêu đường thẳng đi qua cả hai điểm phân biệt A và B?",
+                options: ["1", "2", "3", "Vô số"],
+                correct: "1"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 55: I thuộc tia AD sao cho D là trung điểm AI. AD=6cm thì AI bằng bao nhiêu cm? (Chỉ ghi số)",
+                correct: "12"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 56: Siêu thị đến Cafe là 900m. Trạm M nằm giữa sao cho M cách siêu thị gấp đôi M cách Cafe. Khoảng cách M đến Cafe là? (Chỉ ghi số)",
+                correct: "300"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 57: Hình chữ nhật có mấy trục đối xứng? (Chỉ ghi số)",
+                correct: "2"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 58: Nếu 3 điểm thẳng hàng thì chắc chắn luôn có một và chỉ một điểm nằm giữa hai điểm còn lại.",
+                correct: "Đúng"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 59: Biển báo cấm đi ngược chiều (màu đỏ, vạch ngang trắng giữa) là hình có tâm đối xứng.",
+                correct: "Đúng"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 60: Hai tia đối nhau sẽ tạo thành một góc bẹt.",
+                correct: "Đúng"
+            }
         ];
 
         // Biến hệ thống quản lý luồng game
