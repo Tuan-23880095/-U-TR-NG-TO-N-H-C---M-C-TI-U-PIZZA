@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đua Top Giải Toán - Giành Pizza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans h-screen flex flex-col">
+
+    <header class="bg-orange-500 text-white text-center p-4 shadow-md">
+        <h1 class="text-2xl font-bold">🍕 ĐẤU TRƯỜNG TOÁN HỌC - MỤC TIÊU PIZZA 🍕</h1>
+        <p class="text-sm">Quỹ Pizza: 300.000 VNĐ - Xếp hạng quyết định số tiền bạn phải đóng!</p>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 max-w-3xl">
+        
+        <div id="login-screen" class="bg-white p-6 rounded-lg shadow-lg text-center mt-10">
+            <h2 class="text-xl font-bold mb-4">Nhập tên để bắt đầu</h2>
+            <input type="text" id="studentName" placeholder="Ví dụ: Nguyễn Văn A" class="w-full p-3 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-orange-500">
+            <button onclick="startQuiz()" class="bg-orange-500 text-white font-bold py-3 px-6 rounded hover:bg-orange-600 transition duration-300 w-full">
+                BẮT ĐẦU VÀ TÍNH GIỜ
+            </button>
+        </div>
+
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-lg shadow-lg">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <span class="font-bold text-lg" id="display-name"></span>
+                <span class="font-bold text-red-500 text-xl">⏱ <span id="timer">0</span>s</span>
+            </div>
+            
+            <div id="questions-container" class="space-y-6">
+                </div>
+
+            <button onclick="submitQuiz()" class="mt-8 bg-green-500 text-white font-bold py-3 px-6 rounded hover:bg-green-600 transition duration-300 w-full">
+                NỘP BÀI THẦY ƠI!
+            </button>
+        </div>
+
+        <div id="result-screen" class="hidden bg-white p-6 rounded-lg shadow-lg text-center mt-10">
+            <h2 class="text-3xl font-bold mb-4 text-green-600">Hoàn thành!</h2>
+            <p class="text-lg mb-2">Điểm số: <span id="final-score" class="font-bold text-xl"></span>/100</p>
+            <p class="text-lg mb-6">Thời gian: <span id="final-time" class="font-bold text-xl text-red-500"></span> giây</p>
+            <p class="text-md italic text-gray-600 mb-4" id="status-msg">Đang gửi dữ liệu về hệ thống...</p>
+            <div class="p-4 bg-orange-100 text-orange-800 rounded">
+                Hãy chờ thầy tổng hợp trên Google Sheet để xem ai phải nộp quỹ Pizza nhé!
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // THAY URL CỦA BẠN VÀO ĐÂY (Link Apps Script đã Publish làm Web App)
+        const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec";
+
+        // NGÂN HÀNG CÂU HỎI (Bạn thêm 30 câu vào đây theo cấu trúc này)
+        const questions = [
+            {
+                type: "trac-nghiem",
+                question: "Câu 1: Số đối của phân số 3/25 là:",
+                options: ["25/3", "-25/3", "-3/25", "1/25"],
+                correct: "-3/25"
+            },
+            {
+                type: "tra-loi-ngan",
+                question: "Câu 2: Bạn Nam đi siêu thị mua món đồ giá 145 600 đồng. Làm tròn đến hàng nghìn Nam phải trả bao nhiêu? (Chỉ ghi số)",
+                correct: "146000"
+            },
+            {
+                type: "dung-sai",
+                question: "Câu 3: Hình chữ nhật có 4 trục đối xứng.",
+                correct: "Sai"
+            }
+        ];
+
+        let startTime;
+        let timerInterval;
+        let studentName = "";
+
+        function startQuiz() {
+            studentName = document.getElementById("studentName").value.trim();
+            if (!studentName) {
+                alert("Vui lòng nhập tên của bạn!");
+                return;
+            }
+
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            document.getElementById("display-name").innerText = "Học sinh: " + studentName;
+
+            renderQuestions();
+
+            // Bắt đầu đếm giờ
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById("timer").innerText = elapsedTime;
+            }, 1000);
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById("questions-container");
+            container.innerHTML = "";
+
+            questions.forEach((q, index) => {
+                let html = `<div class="bg-gray-50 p-4 rounded border"><p class="font-bold mb-2">${q.question}</p>`;
+                
+                if (q.type === "trac-nghiem") {
+                    q.options.forEach(opt => {
+                        html += `<label class="block mb-1"><input type="radio" name="q${index}" value="${opt}" class="mr-2"> ${opt}</label>`;
+                    });
+                } else if (q.type === "tra-loi-ngan") {
+                    html += `<input type="text" id="q${index}" class="w-full p-2 border rounded" placeholder="Nhập đáp án...">`;
+                } else if (q.type === "dung-sai") {
+                    html += `<label class="block mb-1"><input type="radio" name="q${index}" value="Đúng" class="mr-2"> Đúng</label>`;
+                    html += `<label class="block mb-1"><input type="radio" name="q${index}" value="Sai" class="mr-2"> Sai</label>`;
+                }
+                html += `</div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            let score = 0;
+
+            // Chấm điểm cơ bản (Mỗi câu 10đ)
+            questions.forEach((q, index) => {
+                if (q.type === "trac-nghiem" || q.type === "dung-sai") {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    if (selected && selected.value.trim() === q.correct) score += 10;
+                } else if (q.type === "tra-loi-ngan") {
+                    const answer = document.getElementById(`q${index}`).value.trim().toLowerCase();
+                    if (answer === q.correct.toLowerCase()) score += 10;
+                }
+            });
+
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+            
+            document.getElementById("final-score").innerText = score;
+            document.getElementById("final-time").innerText = timeTaken;
+
+            // Gửi dữ liệu về Google Sheets
+            sendDataToSheet(studentName, score, timeTaken);
+        }
+
+        function sendDataToSheet(name, score, time) {
+            const payload = {
+                action: "save_toan_pizza", // Kích hoạt Case 11
+                hoTen: name,
+                diem: score,
+                thoiGian: time
+            };
+
+            fetch(GOOGLE_APP_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors", // Bỏ qua lỗi CORS khi gọi Web App
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                document.getElementById("status-msg").innerText = "✅ Đã nộp bài thành công!";
+                document.getElementById("status-msg").classList.replace("text-gray-600", "text-green-600");
+            })
+            .catch(error => {
+                document.getElementById("status-msg").innerText = "❌ Lỗi mạng, hãy báo với thầy!";
+                document.getElementById("status-msg").classList.replace("text-gray-600", "text-red-600");
+            });
+        }
+    </script>
+</body>
+</html>
