@@ -19,409 +19,137 @@
             <h2 class="text-xl font-bold mb-4">Nhập tên để bắt đầu</h2>
             <input type="text" id="studentName" placeholder="Ví dụ: Nguyễn Văn A" class="w-full p-3 border rounded mb-4 focus:outline-none focus:ring-2 focus:ring-orange-500">
             <button onclick="startQuiz()" class="bg-orange-500 text-white font-bold py-3 px-6 rounded hover:bg-orange-600 transition duration-300 w-full">
-                BẮT ĐẦU VÀ TÍNH GIỜ
+                VÀO PHẦN 1 VÀ TÍNH GIỜ
             </button>
         </div>
 
         <div id="quiz-screen" class="hidden bg-white p-6 rounded-lg shadow-lg">
             <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <span class="font-bold text-lg" id="display-name"></span>
-                <span class="font-bold text-red-500 text-xl">⏱ <span id="timer">0</span>s</span>
+                <div>
+                    <span class="font-bold text-lg block text-gray-700" id="display-name"></span>
+                    <span class="font-bold text-2xl text-orange-600" id="section-title">PHẦN 1: KHỞI ĐỘNG</span>
+                </div>
+                <div class="text-right">
+                    <span class="font-bold text-red-500 text-2xl">⏱ <span id="timer">0</span>s</span>
+                </div>
             </div>
             
-            <div id="questions-container" class="space-y-6">
+            <div id="questions-container" class="space-y-6 mt-4">
                 </div>
 
-            <button onclick="submitQuiz()" class="mt-8 bg-green-500 text-white font-bold py-3 px-6 rounded hover:bg-green-600 transition duration-300 w-full">
-                NỘP BÀI THẦY ƠI!
+            <button onclick="submitSection()" class="mt-8 bg-green-500 text-white font-bold py-3 px-6 rounded hover:bg-green-600 transition duration-300 w-full text-lg">
+                NỘP BÀI <span id="btn-submit-text">PHẦN 1</span>
             </button>
         </div>
 
-        <div id="result-screen" class="hidden bg-white p-6 rounded-lg shadow-lg text-center mt-10">
-            <h2 class="text-3xl font-bold mb-4 text-green-600">Hoàn thành!</h2>
-            <p class="text-lg mb-2">Điểm số: <span id="final-score" class="font-bold text-xl"></span>/100</p>
-            <p class="text-lg mb-6">Thời gian: <span id="final-time" class="font-bold text-xl text-red-500"></span> giây</p>
-            <p class="text-md italic text-gray-600 mb-4" id="status-msg">Đang gửi dữ liệu về hệ thống...</p>
-            <div class="p-4 bg-orange-100 text-orange-800 rounded">
-                Hãy chờ thầy tổng hợp trên Google Sheet để xem ai phải nộp quỹ Pizza nhé!
+        <div id="break-screen" class="hidden bg-white p-6 rounded-lg shadow-lg text-center mt-10">
+            <h2 class="text-2xl font-bold mb-4 text-blue-600" id="break-title">Hoàn thành Phần 1!</h2>
+            <div class="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+                <p class="text-lg">Điểm phần này: <span id="section-score" class="font-bold text-xl text-green-600"></span>/200</p>
+                <p class="text-lg">Thời gian chặng: <span id="section-time" class="font-bold text-xl text-red-500"></span> giây</p>
             </div>
+            <button onclick="nextSection()" class="bg-orange-500 text-white font-bold py-3 px-6 rounded hover:bg-orange-600 transition duration-300 w-full text-lg shadow-md">
+                TIẾP TỤC CHIẾN ĐẤU 🚀
+            </button>
+        </div>
+
+        <div id="result-screen" class="hidden bg-white p-6 rounded-lg shadow-lg text-center mt-10 border-t-8 border-orange-500">
+            <h2 class="text-3xl font-bold mb-4 text-green-600">🎉 ĐÃ HOÀN THÀNH 3 CHẶNG! 🎉</h2>
+            <div class="bg-gray-100 p-4 rounded mb-6 text-left inline-block w-full max-w-sm">
+                <p class="mb-2">🔹 Điểm Phần 1: <span id="res-p1" class="font-bold"></span></p>
+                <p class="mb-2">🔹 Điểm Phần 2: <span id="res-p2" class="font-bold"></span></p>
+                <p class="mb-2 border-b pb-2">🔹 Điểm Phần 3: <span id="res-p3" class="font-bold"></span></p>
+                <p class="text-xl mt-2 text-green-700">🏆 TỔNG ĐIỂM: <span id="final-score" class="font-bold text-2xl"></span>/600</p>
+                <p class="text-xl mt-2 text-red-600">⏱ TỔNG THỜI GIAN: <span id="final-time" class="font-bold text-2xl"></span>s</p>
+            </div>
+            
+            <p class="text-md font-bold text-gray-700 mb-4" id="status-msg">Đang tổng hợp dữ liệu gửi về hệ thống thầy giáo...</p>
         </div>
 
     </main>
 
     <script>
-        // THAY URL CỦA BẠN VÀO ĐÂY (Link Apps Script đã Publish làm Web App)
         const GOOGLE_APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQv_yBuMyaGpkrSrsShm1rdlk9mhcqZBkHQ5x5MZAQpcHs1t4Ixdyuw6tShU3T-rEPiQ/exec";
 
-        // NGÂN HÀNG CÂU HỎI (Bạn thêm 30 câu vào đây theo cấu trúc này)
+        // =======================================================
+        // DÁN TOÀN BỘ 60 CÂU HỎI VÀO ĐÂY (Giữ nguyên cấu trúc)
+        // Lưu ý: Đảm bảo có chính xác 60 items trong mảng này!
+        // =======================================================
         const questions = [
-            // ==========================================
-            // BỘ 1: KHỞI ĐỘNG (Phần 1 - Gốc)
-            // ==========================================
-            {
-                type: "trac-nghiem",
-                question: "Câu 1: Số đối của phân số -7/15 là:",
-                options: ["15/7", "-15/7", "7/15", "-7/-15"],
-                correct: "7/15"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 2: Lớp có 40 học sinh, trong đó số học sinh nữ chiếm 40%. Hỏi lớp có bao nhiêu học sinh nam?",
-                options: ["16", "24", "20", "10"],
-                correct: "24"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 3: Bạn Nam đi siêu thị mua một món đồ giá 145 600 đồng. Nếu làm tròn số tiền đến hàng nghìn, Nam phải trả bao nhiêu?",
-                options: ["145 000", "146 000", "145 500", "150 000"],
-                correct: "146 000"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 4: Trong các góc sau đây, góc nào lớn hơn góc vuông nhưng nhỏ hơn góc bẹt?",
-                options: ["Góc nhọn", "Góc vuông", "Góc bẹt", "Góc tù"],
-                correct: "Góc tù"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 5: Tính nhanh giá trị biểu thức sau: (5/11 * 4/9) + (5/11 * 5/9) (Chỉ ghi phân số dạng a/b)",
-                correct: "5/11"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 6: Đoạn thẳng AB dài 12 cm. Gọi M là trung điểm của AB, N là trung điểm của AM. Hỏi đoạn thẳng AN dài bao nhiêu cm? (Chỉ ghi số)",
-                correct: "3"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 7: Một cửa hàng giảm giá 20% cho tất cả sách. Một cuốn có giá niêm yết 150 000 đồng. Sau khi giảm giá, sách có giá bao nhiêu tiền? (Chỉ ghi số)",
-                correct: "120000"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 8: Hình chữ nhật có 4 trục đối xứng.",
-                correct: "Sai"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 9: Phép tính (-3,5) - (1,5 + 2,5) có kết quả bằng -7,5.",
-                correct: "Đúng"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 10: Hiện tượng nguyệt thực xảy ra khi Mặt trăng nằm giữa Mặt trời và Trái đất.",
-                correct: "Sai"
-            },
-        
-            // ==========================================
-            // BỘ 2: TRẠM VƯỢT CHƯỚNG NGẠI VẬT (Phần 2 - Gốc)
-            // ==========================================
-            {
-                type: "trac-nghiem",
-                question: "Câu 11: Thầy dùng 18g bột cà phê chiết xuất ra 36g dung dịch cà phê lỏng. Tỉ số phần trăm của lượng bột so với dung dịch lỏng là:",
-                options: ["20%", "50%", "200%", "18%"],
-                correct: "50%"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 12: Shin dùng 1/6 cây bút chì vẽ anh hùng, và 1/3 cây bút để vẽ Nanako. Tổng số phần bút chì Shin đã dùng là:",
-                options: ["1/2", "2/9", "1/9", "2/3"],
-                correct: "1/2"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 13: Giá phòng ngày thường là 1.200.000 đồng/đêm. Do lễ, khách sạn tăng giá 25%. Số tiền gia đình phải trả thêm cho 1 đêm là:",
-                options: ["250.000", "1.500.000", "300.000", "200.000"],
-                correct: "300.000"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 14: Flycam có 100% pin. Chuyến đầu giảm 35,5%, chuyến sau tốn thêm 15,2%. Lượng pin còn lại là:",
-                options: ["50,7%", "49,3%", "48,3%", "51,7%"],
-                correct: "49,3%"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 15: Đầu bếp dùng 1/5 bao bột làm bánh ngọt, tiếp 1/4 bao làm bánh mì. Bao bột mì còn lại bao nhiêu phần? (Ghi phân số a/b)",
-                correct: "11/20"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 16: Sách giá 150.000đ giảm 30%. Nam có 110.000đ. Mua xong Nam còn thừa bao nhiêu tiền? (Chỉ ghi số)",
-                correct: "5000"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 17: Bình có 5,0 lít nước. Uống hết 1,2 lít, chia đều phần còn lại vào 2 chai nhỏ. Mỗi chai chứa bao nhiêu lít? (Chỉ ghi số)",
-                correct: "1.9"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 18: Thư mục ảnh chiếm 2/5 bộ nhớ, thư mục video chiếm 3/8 bộ nhớ. Khẳng định: 'Thư mục video chiếm nhiều dung lượng hơn ảnh'.",
-                correct: "Sai"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 19: Trong 500g nước Biển Chết có 175g muối. Khẳng định: 'Tỉ số phần trăm của muối trong nước là 35%'.",
-                correct: "Đúng"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 20: Trong gạo có 1,3% khối lượng chất béo. Khối lượng chất béo trong 15kg gạo là 0,195kg.",
-                correct: "Đúng"
-            },
-        
-            // ==========================================
-            // BỘ 3: TRẠM GIẢI MÃ (Phần 3 - Gốc)
-            // ==========================================
-            {
-                type: "trac-nghiem",
-                question: "Câu 21: Hai thanh ray của đường tàu hỏa cho ta hình ảnh của loại đường thẳng nào?",
-                options: ["Cắt nhau", "Dích dắc", "Song song", "Gấp khúc"],
-                correct: "Song song"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 22: Có bao nhiêu đường thẳng đi qua cả hai điểm phân biệt A và B?",
-                options: ["1", "2", "3", "Vô số"],
-                correct: "1"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 23: Hiện tượng nhật thực xảy ra khi:",
-                options: ["MT và MTrăng khác phía TĐ", "MT và TĐ khác phía MTrăng", "MT và TĐ cùng phía MTrăng", "MTrăng và TĐ khác phía MT"],
-                correct: "MT và TĐ khác phía MTrăng"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 24: Cho một góc có số đo là 125 độ. Góc đó là góc gì?",
-                options: ["Góc vuông", "Góc tù", "Góc bẹt", "Góc nhọn"],
-                correct: "Góc tù"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 25: A, M, N thẳng hàng. AM = 5m, AN = 10m. Khoảng cách MN bằng bao nhiêu? (Chỉ ghi số)",
-                correct: "5"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 26: Đoạn AD = 6 cm. I thuộc tia AD sao cho D là trung điểm của AI. Độ dài AI bằng bao nhiêu cm? (Chỉ ghi số)",
-                correct: "12"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 27: Nhà cách trường 3000m. Siêu thị là trung điểm quãng đường đó. Từ nhà đến siêu thị là bao nhiêu mét? (Chỉ ghi số)",
-                correct: "1500"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 28: Chữ AMBULANCE dán ngược đầu xe là ứng dụng tính chất đối xứng trục để nhìn qua gương thấy xuôi.",
-                correct: "Đúng"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 29: Ký hiệu Chữ thập đỏ (chữ thập y tế) chỉ có đúng 2 trục đối xứng.",
-                correct: "Sai"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 30: Trên đoạn thẳng SU, lều cách đều S và U thì lều chính là trung điểm của SU.",
-                correct: "Đúng"
-            },
-        
-            // ==========================================
-            // BỘ 4: KHỞI ĐỘNG (Phần 1 - Bổ sung)
-            // ==========================================
-            {
-                type: "trac-nghiem",
-                question: "Câu 31: Số đối của phân số 3/25 là:",
-                options: ["25/3", "-25/3", "-3/25", "1/25"],
-                correct: "-3/25"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 32: Kết quả của phép cộng 3/4 + (-2/5) là:",
-                options: ["7/20", "1/20", "-7/20", "-1/4"],
-                correct: "7/20"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 33: Biểu thức (-3,12) - (1,5 + 2,8) tương đương với:",
-                options: ["-3,12 - 1,5 + 2,8", "-3,12 - 1,5 - 2,8", "3,12 - 1,5 + 2,8", "-3,12 + 1,5 - 2,8"],
-                correct: "-3,12 - 1,5 - 2,8"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 34: Có bao nhiêu số thập phân x (có 1 chữ số sau dấu phẩy) thỏa mãn 3,26 < x < 3,81?",
-                options: ["4", "5", "6", "7"],
-                correct: "6"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 35: Tính nhanh B = (4/9 * 2/7) + (4/9 * 5/7). (Ghi phân số a/b)",
-                correct: "4/9"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 36: Kết quả của phép tính 30,4 - (10,3 + 1,5) là bao nhiêu? (Chỉ ghi số)",
-                correct: "18.6"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 37: Làm tròn số -1260,23 đến hàng trăm. (Chỉ ghi số)",
-                correct: "-1300"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 38: Phân số 6/24 có giá trị bằng phân số 1/4.",
-                correct: "Đúng"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 39: Ly 100ml có 20ml nước cam. Khẳng định: 'Tỉ số phần trăm của cam so với tổng là 25%'.",
-                correct: "Sai"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 40: Số đối của 1/20 là 20/1.",
-                correct: "Sai"
-            },
-        
-            // ==========================================
-            // BỘ 5: TRẠM VƯỢT CHƯỚNG NGẠI VẬT (Phần 2 - Bổ sung)
-            // ==========================================
-            {
-                type: "trac-nghiem",
-                question: "Câu 41: Ứng dụng học tập chiếm 5/11 bộ nhớ, giải trí chiếm 4/9. Thư mục nào chiếm nhiều hơn?",
-                options: ["Học tập", "Giải trí", "Bằng nhau", "Không thể so sánh"],
-                correct: "Học tập"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 42: Lớp có 45 học sinh, 20 giỏi. Số học sinh giỏi chiếm bao nhiêu phần của lớp?",
-                options: ["1/9", "1/3", "4/9", "3/5"],
-                correct: "4/9"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 43: Bill siêu thị 69 850đ. Làm tròn đến hàng nghìn để trả tiền mặt thì trả bao nhiêu?",
-                options: ["69 000", "69 900", "70 000", "71 000"],
-                correct: "70 000"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 44: Gạo chứa 1,3% chất béo. Lượng chất béo trong 15kg gạo là:",
-                options: ["19,5kg", "1,95kg", "19,5g", "0,195kg"],
-                correct: "0,195kg"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 45: Đầu bếp còn dư 11/20 bao bột. Mỗi khay bánh quy cần 1/20 bao. Làm được mấy khay? (Chỉ ghi số)",
-                correct: "11"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 46: Phòng 1.500.000đ được giảm 10%. Số tiền phòng phải trả là bao nhiêu? (Chỉ ghi số)",
-                correct: "1350000"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 47: Shin dư 1/2 cây bút. Vẽ mỗi siêu nhân tốn 1/10 cây. Vẽ được bao nhiêu siêu nhân? (Chỉ ghi số)",
-                correct: "5"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 48: Bình 5,0 lít uống hết 1,2 lít thì còn lại đúng 4,8 lít.",
-                correct: "Sai"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 49: Kết quả của phép trừ 2/3 - 1/4 bằng với phép cộng 2/3 + (-1/4).",
-                correct: "Đúng"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 50: Ảnh chiếm 3/8, video chiếm 2/5. Khẳng định: 'Ảnh chiếm nhiều dung lượng hơn'.",
-                correct: "Sai"
-            },
-        
-            // ==========================================
-            // BỘ 6: TRẠM GIẢI MÃ (Phần 3 - Bổ sung)
-            // ==========================================
-            {
-                type: "trac-nghiem",
-                question: "Câu 51: Một góc có số đo 125 độ được phân loại là góc:",
-                options: ["Vuông", "Nhọn", "Bẹt", "Tù"],
-                correct: "Tù"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 52: Ba điểm thẳng hàng A, M, N. AM=5, AN=10. Khẳng định đúng là:",
-                options: ["A nằm giữa", "M nằm giữa A và N", "N nằm giữa A và M", "Không có điểm giữa"],
-                correct: "M nằm giữa A và N"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 53: Từ nhà đến trường 3000m. Tiệm cafe trên đường đó, cách trường 600m. Khoảng cách nhà đến cafe là:",
-                options: ["1500m", "2400m", "600m", "3600m"],
-                correct: "2400m"
-            },
-            {
-                type: "trac-nghiem",
-                question: "Câu 54: Có tất cả bao nhiêu đường thẳng đi qua cả hai điểm phân biệt A và B?",
-                options: ["1", "2", "3", "Vô số"],
-                correct: "1"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 55: I thuộc tia AD sao cho D là trung điểm AI. AD=6cm thì AI bằng bao nhiêu cm? (Chỉ ghi số)",
-                correct: "12"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 56: Siêu thị đến Cafe là 900m. Trạm M nằm giữa sao cho M cách siêu thị gấp đôi M cách Cafe. Khoảng cách M đến Cafe là? (Chỉ ghi số)",
-                correct: "300"
-            },
-            {
-                type: "tra-loi-ngan",
-                question: "Câu 57: Hình chữ nhật có mấy trục đối xứng? (Chỉ ghi số)",
-                correct: "2"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 58: Nếu 3 điểm thẳng hàng thì chắc chắn luôn có một và chỉ một điểm nằm giữa hai điểm còn lại.",
-                correct: "Đúng"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 59: Biển báo cấm đi ngược chiều (màu đỏ, vạch ngang trắng giữa) là hình có tâm đối xứng.",
-                correct: "Đúng"
-            },
-            {
-                type: "dung-sai",
-                question: "Câu 60: Hai tia đối nhau sẽ tạo thành một góc bẹt.",
-                correct: "Đúng"
-            }
+            // COPY 60 CÂU TỪ TIN NHẮN TRƯỚC DÁN VÀO ĐÂY
+            // ...
+            { type: "trac-nghiem", question: "Câu 1: Số đối của phân số 3/25 là:", options: ["25/3", "-25/3", "-3/25", "1/25"], correct: "-3/25" },
+            { type: "tra-loi-ngan", question: "Câu 2: Bạn Nam đi siêu thị mua món đồ giá 145 600 đồng. Làm tròn đến hàng nghìn Nam phải trả bao nhiêu? (Chỉ ghi số)", correct: "146000" },
+            { type: "dung-sai", question: "Câu 3: Hình chữ nhật có 4 trục đối xứng.", correct: "Sai" }
+            // Vui lòng dán đủ 60 câu để logic chạy đúng!
         ];
 
+        // Biến hệ thống quản lý luồng game
+        let studentName = "";
+        let currentSection = 1; // Từ 1 đến 3
         let startTime;
         let timerInterval;
-        let studentName = "";
+        
+        // Mảng lưu trữ Điểm và Thời gian riêng biệt của 3 phần (Index 0, 1, 2 tương ứng Phần 1, 2, 3)
+        let scores = [0, 0, 0];
+        let times = [0, 0, 0];
 
         function startQuiz() {
             studentName = document.getElementById("studentName").value.trim();
             if (!studentName) {
-                alert("Vui lòng nhập tên của bạn!");
+                alert("Bạn quên nhập tên kìa!");
                 return;
             }
 
             document.getElementById("login-screen").classList.add("hidden");
-            document.getElementById("quiz-screen").classList.remove("hidden");
             document.getElementById("display-name").innerText = "Học sinh: " + studentName;
+            
+            // Khởi động Phần 1
+            loadSection(currentSection);
+        }
 
-            renderQuestions();
+        function loadSection(sectionNum) {
+            // Cập nhật Tiêu đề
+            document.getElementById("section-title").innerText = `PHẦN ${sectionNum}: ${sectionNum === 1 ? 'KHỞI ĐỘNG' : (sectionNum === 2 ? 'VƯỢT CHƯỚNG NGẠI VẬT' : 'GIẢI MÃ HÌNH HỌC')}`;
+            document.getElementById("btn-submit-text").innerText = `PHẦN ${sectionNum}`;
 
-            // Bắt đầu đếm giờ
+            const container = document.getElementById("questions-container");
+            container.innerHTML = "";
+
+            // Lấy ra 20 câu hỏi tương ứng với từng phần
+            // Phần 1: index 0 -> 19
+            // Phần 2: index 20 -> 39
+            // Phần 3: index 40 -> 59
+            const startIndex = (sectionNum - 1) * 20;
+            const endIndex = sectionNum * 20;
+
+            for (let i = startIndex; i < endIndex; i++) {
+                if(!questions[i]) break; // Phòng hờ nếu mảng không đủ 60 câu
+
+                let q = questions[i];
+                let html = `<div class="bg-gray-50 p-4 rounded shadow-sm border border-gray-200"><p class="font-bold mb-3 text-lg text-gray-800">${q.question}</p>`;
+                
+                if (q.type === "trac-nghiem") {
+                    q.options.forEach(opt => {
+                        html += `<label class="block mb-2 cursor-pointer hover:bg-orange-100 p-2 rounded transition"><input type="radio" name="q${i}" value="${opt}" class="mr-2 w-4 h-4 text-orange-500"> <span class="text-md">${opt}</span></label>`;
+                    });
+                } else if (q.type === "tra-loi-ngan") {
+                    html += `<input type="text" id="q${i}" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 outline-none font-bold text-blue-700" placeholder="Nhập đáp án của bạn...">`;
+                } else if (q.type === "dung-sai") {
+                    html += `<label class="block mb-2 cursor-pointer hover:bg-green-100 p-2 rounded transition"><input type="radio" name="q${i}" value="Đúng" class="mr-2 w-4 h-4"> <span class="font-bold text-green-700">Đúng</span></label>`;
+                    html += `<label class="block mb-2 cursor-pointer hover:bg-red-100 p-2 rounded transition"><input type="radio" name="q${i}" value="Sai" class="mr-2 w-4 h-4"> <span class="font-bold text-red-700">Sai</span></label>`;
+                }
+                html += `</div>`;
+                container.innerHTML += html;
+            }
+
+            // Chuyển màn hình và cuộn lên top
+            document.getElementById("break-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            window.scrollTo(0, 0);
+
+            // Reset và Bắt đầu đếm giờ cho phần này
+            document.getElementById("timer").innerText = "0";
             startTime = Date.now();
             timerInterval = setInterval(() => {
                 const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
@@ -429,75 +157,95 @@
             }, 1000);
         }
 
-        function renderQuestions() {
-            const container = document.getElementById("questions-container");
-            container.innerHTML = "";
+        function submitSection() {
+            if (!confirm(`Bạn có chắc muốn nộp Phần ${currentSection}? Vẫn còn thời gian để kiểm tra lại đó!`)) return;
 
-            questions.forEach((q, index) => {
-                let html = `<div class="bg-gray-50 p-4 rounded border"><p class="font-bold mb-2">${q.question}</p>`;
-                
-                if (q.type === "trac-nghiem") {
-                    q.options.forEach(opt => {
-                        html += `<label class="block mb-1"><input type="radio" name="q${index}" value="${opt}" class="mr-2"> ${opt}</label>`;
-                    });
-                } else if (q.type === "tra-loi-ngan") {
-                    html += `<input type="text" id="q${index}" class="w-full p-2 border rounded" placeholder="Nhập đáp án...">`;
-                } else if (q.type === "dung-sai") {
-                    html += `<label class="block mb-1"><input type="radio" name="q${index}" value="Đúng" class="mr-2"> Đúng</label>`;
-                    html += `<label class="block mb-1"><input type="radio" name="q${index}" value="Sai" class="mr-2"> Sai</label>`;
-                }
-                html += `</div>`;
-                container.innerHTML += html;
-            });
-        }
-
-        function submitQuiz() {
+            // Chốt thời gian phần này
             clearInterval(timerInterval);
             const timeTaken = Math.floor((Date.now() - startTime) / 1000);
-            let score = 0;
+            times[currentSection - 1] = timeTaken;
 
-            // Chấm điểm cơ bản (Mỗi câu 10đ)
-            questions.forEach((q, index) => {
+            // Chấm điểm 20 câu của phần này
+            let score = 0;
+            const startIndex = (currentSection - 1) * 20;
+            const endIndex = currentSection * 20;
+
+            for (let i = startIndex; i < endIndex; i++) {
+                if(!questions[i]) break;
+                let q = questions[i];
+
                 if (q.type === "trac-nghiem" || q.type === "dung-sai") {
-                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    const selected = document.querySelector(`input[name="q${i}"]:checked`);
                     if (selected && selected.value.trim() === q.correct) score += 10;
                 } else if (q.type === "tra-loi-ngan") {
-                    const answer = document.getElementById(`q${index}`).value.trim().toLowerCase();
-                    if (answer === q.correct.toLowerCase()) score += 10;
+                    const answerInput = document.getElementById(`q${i}`);
+                    if(answerInput) {
+                        const answer = answerInput.value.trim().toLowerCase();
+                        if (answer === q.correct.toLowerCase()) score += 10;
+                    }
                 }
-            });
+            }
+            scores[currentSection - 1] = score;
 
             document.getElementById("quiz-screen").classList.add("hidden");
-            document.getElementById("result-screen").classList.remove("hidden");
-            
-            document.getElementById("final-score").innerText = score;
-            document.getElementById("final-time").innerText = timeTaken;
 
-            // Gửi dữ liệu về Google Sheets
-            sendDataToSheet(studentName, score, timeTaken);
+            // Kiểm tra xem đã là phần cuối chưa?
+            if (currentSection < 3) {
+                // Nếu chưa, hiện Trạm dừng chân
+                document.getElementById("break-title").innerText = `Đã nộp xong Phần ${currentSection}!`;
+                document.getElementById("section-score").innerText = score;
+                document.getElementById("section-time").innerText = timeTaken;
+                document.getElementById("break-screen").classList.remove("hidden");
+            } else {
+                // Nếu đã xong Phần 3, tính tổng và hiển thị Kết quả cuối
+                calculateFinalResult();
+            }
         }
 
-        function sendDataToSheet(name, score, time) {
+        function nextSection() {
+            currentSection++; // Tăng phần lên 2 hoặc 3
+            loadSection(currentSection);
+        }
+
+        function calculateFinalResult() {
+            // Cộng dồn 3 mảng
+            const totalScore = scores.reduce((a, b) => a + b, 0);
+            const totalTime = times.reduce((a, b) => a + b, 0);
+
+            document.getElementById("res-p1").innerText = `${scores[0]}/200 (${times[0]}s)`;
+            document.getElementById("res-p2").innerText = `${scores[1]}/200 (${times[1]}s)`;
+            document.getElementById("res-p3").innerText = `${scores[2]}/200 (${times[2]}s)`;
+            
+            document.getElementById("final-score").innerText = totalScore;
+            document.getElementById("final-time").innerText = totalTime;
+
+            document.getElementById("result-screen").classList.remove("hidden");
+
+            // Gửi dữ liệu TỔNG về hệ thống
+            sendDataToSheet(studentName, totalScore, totalTime);
+        }
+
+        function sendDataToSheet(name, totalScore, totalTime) {
             const payload = {
-                action: "save_toan_pizza", // Kích hoạt Case 11
+                action: "save_toan_pizza", // Kích hoạt đúng Case 11 trên Apps Script
                 hoTen: name,
-                diem: score,
-                thoiGian: time
+                diem: totalScore,
+                thoiGian: totalTime
             };
 
             fetch(GOOGLE_APP_SCRIPT_URL, {
                 method: "POST",
-                mode: "no-cors", // Bỏ qua lỗi CORS khi gọi Web App
+                mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             })
             .then(() => {
-                document.getElementById("status-msg").innerText = "✅ Đã nộp bài thành công!";
-                document.getElementById("status-msg").classList.replace("text-gray-600", "text-green-600");
+                document.getElementById("status-msg").innerHTML = "✅ Dữ liệu đã được khóa. Hãy chờ Thầy tổng hợp bảng xếp hạng Pizza!";
+                document.getElementById("status-msg").classList.replace("text-gray-700", "text-green-600");
             })
             .catch(error => {
-                document.getElementById("status-msg").innerText = "❌ Lỗi mạng, hãy báo với thầy!";
-                document.getElementById("status-msg").classList.replace("text-gray-600", "text-red-600");
+                document.getElementById("status-msg").innerText = "❌ Lỗi mạng! Chụp ngay màn hình này gửi cho thầy nhé!";
+                document.getElementById("status-msg").classList.replace("text-gray-700", "text-red-600");
             });
         }
     </script>
